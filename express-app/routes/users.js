@@ -11,8 +11,16 @@ const obj2 = {
   "name": "Черезов Тимофей"
 }
 
+const users = []
+users.push(obj1);
+users.push(obj2);
+router.post('/', function(req, res){
+  const user = req.body;
+  users.push(user);
+  res.status(201).json(user);
+});
 router.get('/', function(req, res, next) {
-  res.send([obj1, obj2]);
+  res.send(users);
 });
 
 module.exports = router;
