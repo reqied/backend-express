@@ -22,5 +22,14 @@ router.post('/', function(req, res){
 router.get('/', function(req, res, next) {
   res.send(users);
 });
-
+router.get('/:id', function(req, res, next) {
+  const userId = parseInt(req.params.id);
+  const user = users.find(user => user.id === userId);
+  console.log(user)
+  if (!user) {
+    res.status(404).send(' мяу');
+  } else {
+    res.json(user);
+  }
+});
 module.exports = router;
