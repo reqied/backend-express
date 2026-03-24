@@ -11,12 +11,19 @@ const obj2 = {
   "name": "Черезов Тимофей"
 }
 
+const sqlite3 = require('sqlite3').verbose()
+const db = new sqlite3.Database('mydb.db');
+db.run(`CREATE TABLE IF NOT EXISTS users (
+   id INTEGER PRIMARY KEY AUTOINCREMENT,
+   name text)`);
+
 const users = []
 users.push(obj1);
 users.push(obj2);
 router.post('/', function(req, res){
-  const user = req.body;
-  users.push(user);
+  const user = req.body.name;
+  const insert = "INSERT INTO users (name) VALUES (?)";
+  db.run(insert, [user]);
   res.status(201).json(user);
 });
 router.get('/', function(req, res, next) {
@@ -24,12 +31,19 @@ router.get('/', function(req, res, next) {
 });
 router.get('/:id', function(req, res, next) {
   const userId = parseInt(req.params.id);
+
   const user = users.find(user => user.id === userId);
   console.log(user)
   if (!user) {
-    res.status(404).send(' мяу');
+    next(new Error('No user found.'));
   } else {
-    res.json(user);
+    db.all("SELECT id, name FROM users", [], (err, rows) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(rows);
+      }
+    });
   }
 });
 module.exports = router;
