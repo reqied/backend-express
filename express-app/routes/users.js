@@ -12,14 +12,17 @@ const obj2 = {
 }
 
 const sqlite3 = require('sqlite3').verbose()
+
 const db = new sqlite3.Database('mydb.db');
 db.run(`CREATE TABLE IF NOT EXISTS users (
    id INTEGER PRIMARY KEY AUTOINCREMENT,
    name text)`);
 
+
 const users = []
 users.push(obj1);
 users.push(obj2);
+
 router.post('/', function(req, res){
   const user = req.body.name;
   const insert = "INSERT INTO users (name) VALUES (?)";
